@@ -1,0 +1,56 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-panels {
+  padding: 20px
+}
+
+.App-filterbar-checkbox-panel {
+	border-style: solid;
+	border-width: 1px;
+	padding: 5px 20px;
+	margin: 8px;
+}
+
+.App-filterbar-hr {
+	margin: 20px 0px;
+}
+
+.App-filterbar-button {
+	width: 50%;
+}
+
+.App-filterbar-button-group {
+	width: 80%;
+	margin: 15px 0px;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.App-filterbar-textInput {
+	width: 100%;
+}
+
+.App-filterbar-collapses {
+	width: 100%;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
