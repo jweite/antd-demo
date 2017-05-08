@@ -15,15 +15,15 @@ export class RatingsFilter extends Component {
 		isCollapsed: !prevState.isCollapsed,
 	}));
   }
-
+  
   render() {
 	return <div>
 		<Row type="flex" justify="start"><Icon onClick={this.collapserClick} type={this.state.isCollapsed ? "down" : "up"} />&nbsp;<strong>Rating</strong></Row>
 			{!this.state.isCollapsed && <div>
 			<Row>
 				<Button.Group className="App-filterbar-button-group">
-					<Button className="App-filterbar-button" type={this.props.filterState.mode === "acr" ? "primary" : ""} onClick={this.props.onAcrMode}>ACR</Button>
-					<Button className="App-filterbar-button" type={this.props.filterState.mode === "csr" ? "primary" : ""} onClick={this.props.onCsrMode}>CSR</Button>
+					<Button className="App-filterbar-button" type={this.props.filterState.mode === "acr" ? "primary" : ""} onClick={(e) => {this.props.onFilterModeChange(e, "acr")}}>ACR</Button>	
+					<Button className="App-filterbar-button" type={this.props.filterState.mode === "csr" ? "primary" : ""} onClick={(e) => {this.props.onFilterModeChange(e, "csr")}}>CSR</Button>
 				</Button.Group>
 			</Row>
 			

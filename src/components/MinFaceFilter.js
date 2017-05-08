@@ -1,26 +1,32 @@
 import React, { Component } from 'react';
-import { Col, Icon, InputNumber, Row } from 'antd';
+import { Col, Icon, Row } from 'antd';
+import { NumericInput } from './NumericInput';
 import '../App.css';
 
 export class MinFaceFilter extends Component {
-	
-  collapserClick = (parameter) => {
-	  console.log("Collapser clicked: ");
-	  console.log(parameter);
+	constructor(props) {
+		super(props);
+		this.state = {
+			isCollapsed: false,
+		};
+	}
+
+  collapserClick = (e) => {
+	this.setState(prevState => ({
+		isCollapsed: !prevState.isCollapsed,
+	}));
   }
-	
+
   render() {
 	return <div>
-		<Row type="flex" justify="start"><Icon onClick={this.collapserClick} type="up" />&nbsp;<strong>Minimum Face</strong></Row>
+		<Row type="flex" justify="start"><Icon onClick={this.collapserClick} type={this.state.isCollapsed ? "down" : "up"} />&nbsp;<strong>Minimum Face</strong></Row>
 		<Row type="flex" justify="start" align="middle" className="App-filterbar-checkbox-panel">
 			<Col span={1}>
 				<label>&lt;</label>
 			</Col>
 			<Col span={3} />
 			<Col span={20}>
-				<InputNumber className="App-filterbar-textInput"
-				  formatter={value => `$ ${value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}
-				  parser={value => value.replace(/\$\s?|(,*)/g, '')}						/>
+				<NumericInput value={this.props.filterState.value} onBlur={this.props.onFilterChanged} className="App-filterbar-textInput" />
 			</Col>
 		</Row>
 	</div>
