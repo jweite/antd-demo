@@ -7,6 +7,7 @@ import { MaturityDurationFilter } from './components/MaturityDurationFilter';
 import { PriceFilter } from './components/PriceFilter';
 import { OASYieldFilter } from './components/OASYieldFilter';
 import { MinFaceFilter } from './components/MinFaceFilter';
+import { SectorsFilter } from './components/SectorsFilter';
 import { BondTable } from './components/BondTable';
 
 import './App.css';
@@ -157,7 +158,7 @@ class App extends Component {
     return (
       <div className="App">
 		<Row>
-			<Col span={6} className="App-panels">
+			<Col span={4} className="App-panels">
 				<RecsFilter filterState={this.state.recsFilter} onFilterChanged={this.onRecsFilterChanged} />
 				<hr className="App-filterbar-hr"/>
 				<RatingsFilter filterState={this.state.ratingFilter} onFilterChanged={this.onRatingsFilterChanged} onFilterModeChange={this.onRatingsFilterModeChange} />
@@ -169,8 +170,10 @@ class App extends Component {
 				<OASYieldFilter filterState={this.state.oasYieldFilter} onLowerFilterChanged={this.onOasYieldLowerFilterChanged} onUpperFilterChanged={this.onOasYieldUpperFilterChanged} onFilterModeChange={this.onOasYieldFilterModeChange} />
 				<hr className="App-filterbar-hr"/>
 				<MinFaceFilter filterState={this.state.minFaceFilter} onFilterChanged={this.onMinFaceFilterChanged} />
+				<hr className="App-filterbar-hr"/>
+				<SectorsFilter />
 			</Col>
-			<Col span={18}>
+			<Col span={20}>
 				<BondTable />
 			</Col>
 		</Row>

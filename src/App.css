@@ -50,6 +50,19 @@
 	width: 100%;
 }
 
+.App-filterbar-sector-button {
+	width: 100%;
+	margin: 10px 0px;
+}
+
+.App-filterbar-sector-checkbox-div {
+	width: 100%;
+	margin: 10px 0px;
+	border-style: solid;
+	border-width: 1px;
+}
+
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
