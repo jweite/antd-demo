@@ -8,6 +8,7 @@ import { RatingsFilter } from './components/RatingsFilter';
 import { MaturityDurationFilter } from './components/MaturityDurationFilter';
 import { PriceFilter } from './components/PriceFilter';
 import { OASYieldFilter } from './components/OASYieldFilter';
+import { LiquidityFilter } from './components/LiquidityFilter';
 import { MinFaceFilter } from './components/MinFaceFilter';
 import { SectorsFilter } from './components/SectorsFilter';
 import { BondTable } from './components/BondTable';
@@ -77,8 +78,23 @@ class App extends Component {
 				upper : ""
 			}
 		},
+		liquidityFilter : {
+			upper: 90,
+			lower: 10
+		},
 		minFaceFilter : {
 			value : ""
+		},
+		sectorsFilter : {
+			chemicals : true,
+			coal: false,
+			metalsMining: false,
+			oilGas: false
+		},
+		regionsFilter : {
+			americas : false,
+			emea : false,
+			asiaPacific : false
 		}
 	};
   }	
@@ -164,6 +180,13 @@ class App extends Component {
     });
   }
 
+  onLiquidityFilterChanged = (vals) => {
+	this.setState( prevState => {
+		prevState.liquidityFilter = vals;
+		return prevState;
+    });
+  }
+
   onMinFaceFilterChanged = (val) => {
 	this.setState( prevState => {
 		prevState.minFaceFilter.value = val;
@@ -171,6 +194,13 @@ class App extends Component {
     });
   }
   
+  onSectorsFilterChanged = (e) => {
+	this.setState( prevState => {	
+		prevState.sectorsFilter[e.target.stateAttrName] = e.target.checked;
+		return prevState;
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -186,9 +216,11 @@ class App extends Component {
 				<hr className="App-filterbar-hr"/>
 				<OASYieldFilter filterState={this.state.oasYieldFilter} onLowerFilterChanged={this.onOasYieldLowerFilterChanged} onUpperFilterChanged={this.onOasYieldUpperFilterChanged} onFilterModeChange={this.onOasYieldFilterModeChange} />
 				<hr className="App-filterbar-hr"/>
+				<LiquidityFilter filterState={this.state.liquidityFilter} onFilterChanged={this.onLiquidityFilterChanged} />
+				<hr className="App-filterbar-hr"/>
 				<MinFaceFilter filterState={this.state.minFaceFilter} onFilterChanged={this.onMinFaceFilterChanged} />
 				<hr className="App-filterbar-hr"/>
-				<SectorsFilter />
+				<SectorsFilter filterState={this.state.sectorsFilter} onFilterChanged={this.onSectorsFilterChanged}/>
 			</Col>
 			<Col span={20}>
 				<BondTable bondDataService={this.bondDataService}/>

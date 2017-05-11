@@ -25,10 +25,10 @@ export class SectorFilter extends Component {
 				<Button className="App-filterbar-sector-button" onClick={this.collapserClick}>{this.props.parentSector}</Button> 
 			: 
 				<div className="App-filterbar-sector-checkbox-div">
-					<p onClick={this.collapserClick} >{this.props.parentSector}</p>
+					<strong><p onClick={this.collapserClick} >{this.props.parentSector}</p></strong>
 					{this.props.childSectors.map(childSector => 
-						<Row type="flex" justify="start" className="App-filterbar-checkbox-panel">
-							<Checkbox>{childSector}</Checkbox>
+						<Row key={childSector.id} type="flex" justify="start" className="App-filterbar-checkbox-panel">
+							<Checkbox stateAttrName={childSector.id} onChange={this.props.onFilterChanged} checked={this.props.filterState[childSector.id]}>{childSector.name}</Checkbox>
 						</Row>
 					)}
 				</div>
