@@ -8,14 +8,12 @@ export class BondTable extends Component {
 		
 	this.state = {
 		waitingForContent: true,
-		bonds: []
+		bonds: [],
+		sortField: "IssuerName",
+		sortDirection: "ascend"
 	}
   }
 	
-  handleTableChange = (pagination, filters, sorter) => {
-	  console.log(sorter);
-  }
-
   columns = [
 	{
 	  title: 'Issuer',
@@ -55,6 +53,42 @@ export class BondTable extends Component {
 	}
   ];	  
   
+	componentWillMount() 
+	{
+		this.refreshFromServer(this.props);
+	}
+	
+	componentWillUpdate(nextProps, nextState) 
+	{
+		console.log("componentWillUpdate");
+		if (nextState.sortField !== this.state.sortField || nextState.sortDirection !== this.state.sortDirection) {
+			console.log("Requesting...");
+			this.refreshFromServer(nextProps);
+		}
+	}
+	
+	refreshFromServer(props)
+	{
+		var query='{"ParentSector":"Basic Industry", "Coupon": { "$gt": 4, "$lt":6 }}';
+		var sort = 'sortField=' + this.state.sortField + '&' + 'sortDirection=' + this.state.sortDirection;
+		console.log(sort);
+		this.props.bondDataService.get('/bonds?query=' + query + '&' + sort)
+			.then((response) => {
+				this.contentReceived(response.data);
+			})
+			.catch(function (error) {
+				console.log(error);
+			})
+		;
+	}
+
+	contentReceived(bonds) {
+		this.setState({
+			waitingForContent: false,
+			bonds: bonds
+		});
+	}
+
 	rowSelection = {
 		onChange: (selectedRowKeys, selectedRows) => {
 			console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -70,46 +104,23 @@ export class BondTable extends Component {
 		}),
 	};
 
-	componentWillMount() 
-	{
-		this.refreshFromServer(this.props);
-	}
-	
-	componentWillUpdate(nextProps, nextState) 
-	{
-		// this.refreshFromServer(nextProps);
-	}
-	
-	refreshFromServer(props)
-	{
-		this.props.bondDataService.get('/bonds?query={"ParentSector":"Basic Industry", "Coupon": { "$gt": 4, "$lt":6 }}')
-			.then((response) => {
-				this.contentReceived(response.data);
-			})
-			.catch(function (error) {
-				console.log(error);
-			})
-		;
-	}
-
-	contentReceived(bonds) {
-		console.log("Response");
-		console.log(bonds);
+	handleTableChange = (pagination, filters, sorter) => {
+		console.log("handleTableChange");
+		console.log(sorter);
 		this.setState({
-			waitingForContent: false,
-			bonds: bonds
+			sortField: sorter.field,
+			sortDirection: sorter.order
 		});
+		console.log(this.state);
 	}
-	
   
   render() {
-	console.log("Render");
-	console.log(this.state)
-	  
+//	console.log(this.state);
 	return ((this.state.waitingForContent === true) ?
 			<div>Waiting for content...</div> :
 			<Table
 				columns={this.columns}
+				rowKey="_id"
 				dataSource={this.state.bonds}
 				rowSelection={this.rowSelection}
 				onChange={this.handleTableChange}
