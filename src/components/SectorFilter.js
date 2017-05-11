@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Col, Row } from 'antd';
+import { Button, Checkbox, Row } from 'antd';
 import '../App.css';
 
 export class SectorFilter extends Component {

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import axios from 'axios';
 import { Col, Row } from 'antd';
+
 import { RecsFilter } from './components/RecsFilter';
 import { RatingsFilter } from './components/RatingsFilter';
 import { MaturityDurationFilter } from './components/MaturityDurationFilter';
@@ -16,6 +18,21 @@ class App extends Component {
 
   constructor(props) {
 	super(props);	
+
+	const protocol = "http";
+	const server = window.location.hostname;
+	const port = 3333;
+	const timeout = 2000;
+	const endpointURI = "";
+	const bondDataServiceURL = protocol + "://" + server + ":" + port + '/' + endpointURI;	
+	this.bondDataService = axios.create({
+	  baseURL: bondDataServiceURL,
+	  timeout: timeout,
+	  headers: {
+		'Content-Type': 'application/json'
+	  }
+	});	
+	
 	this.state = {
 		recsFilter : {
 			outPerform: false,
@@ -174,7 +191,7 @@ class App extends Component {
 				<SectorsFilter />
 			</Col>
 			<Col span={20}>
-				<BondTable />
+				<BondTable bondDataService={this.bondDataService}/>
 			</Col>
 		</Row>
       </div>
