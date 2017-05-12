@@ -12,6 +12,7 @@ import { OASYieldFilter } from './components/OASYieldFilter';
 import { LiquidityFilter } from './components/LiquidityFilter';
 import { MinFaceFilter } from './components/MinFaceFilter';
 import { SectorsFilter } from './components/SectorsFilter';
+import { RegionsFilter } from './components/RegionsFilter';
 import { BondTable } from './components/BondTable';
 
 import './App.css';
@@ -86,12 +87,8 @@ class App extends Component {
 		minFaceFilter : {
 			value : ""
 		},
-		regionsFilter : {
-			americas : false,
-			emea : false,
-			asiaPacific : false
-		},
-		sectors: Set()
+		sectors: Set(),
+		regions: Set()
 	};
 	
 	this.sectorMap = [
@@ -99,57 +96,57 @@ class App extends Component {
 			name: "Basic Industries",
 			children: [
 				{ name: "Chemicals", children: ["Chemicals"] },
-				{ name: "Constr Aggregates", children: [""] },
-				{ name: "Metals & Mining", children: [""] },
+				{ name: "Constr Aggregates", children: ["XXXXXXX"] },
+				{ name: "Metals & Mining", children: ["Metals/Mining Excluding Steel","Steel Producers/Products"] },
 				{ name: "Paper & Packaging", children: ["Forestry/Paper", "Packaging"] }
 			]
 		}, {
 			name: "Consumer",
 			children: [
-				{ name: "Cons Proc / Svc", children: [""] },
-				{ name: "Food & Bev", children: [""] },
-				{ name: "Gaming & Leisure", children: [""] },
-				{ name: "Healthcare / Pharma", children: [""] },
-				{ name: "Retail / Grocers", children: [""] }
+				{ name: "Cons Prod / Svc", children: ["Consumer-Products","Personal & Household Products","Household & Leisure Products"] },
+				{ name: "Food & Bev", children: ["Beverage", "Food - Wholesale"] },
+				{ name: "Gaming & Leisure", children: ["Gaming","Hotels","Leisure","Recreation & Travel","Restaurants","Tobacco"] },
+				{ name: "Healthcare / Pharma", children: ["Health Facilities", "Health Services", "Pharmaceuticals","Managed Care","Medical Products"] },
+				{ name: "Retail / Grocers", children: ["Department Stores","Discount Stores","Food & Drug Retailers","Specialty Retail"] }
 			]
 		}, {
 			name: "Energy", 
 			children: [
-				{ name: "Oil & Gas", children: [""] },
-				{ name: "Pipelines / MLPs", children: [""] },
-				{ name: "Utilities", children: [""] }
+				{ name: "Oil & Gas", children: ["Energy - Exploration & Production","Gas Distribution","Integrated Energy","Oil Field Equipment & Services","Oil Refining & Marketing"] },
+				{ name: "Pipelines / MLPs", children: ["XXXXXXX"] },
+				{ name: "Utilities", children: ["Electric-Dist/Trans","Electric-Generation","Electric-Integrated","Non-Electric Utilities"] }
 			]
 		}, {
 			name: "Financial Services",
 			children: [
-				{ name: "Banks / Brokers", children: [""] },
-				{ name: "Insurance", children: [""] },
-				{ name: "Regional Banks", children: [""] },
-				{ name: "REITs / CRE", children: [""] },
-				{ name: "Specialty Finance", children: [""] }
+				{ name: "Banks / Brokers", children: ["Banking","Brokerage"] },
+				{ name: "Insurance", children: ["Insurance Brokerage","Life Insurance","Monoline Insurance","Multi-Line Insurance","Reinsurance"] },
+				{ name: "Regional Banks", children: ["XXXXXX"] },
+				{ name: "REITs / CRE", children: ["REITs","Real Estate Dev & Mgt"] },
+				{ name: "Specialty Finance", children: ["Investment & Misc Financial Services"] }
 			]
 		}, {
 			name: "Manufaturing",
 			children: [
-				{ name: "Aerospace / Defense", children: [""] },
-				{ name: "Automotive", children: [""] },
-				{ name: "Captial Goods", children: [""] },
-				{ name: "Conglomerates", children: [""] },
-				{ name: "Equip Fin & Lease", children: [""] },
-				{ name: "Homebuilding", children: [""] }
+				{ name: "Aerospace / Defense", children: ["Aerospace/Defense"] },
+				{ name: "Automotive", children: ["Auto Parts & Equipment", "Automakers"] },
+				{ name: "Captial Goods", children: ["Diversified Capital Goods","Machinery","Office Equipment"] },
+				{ name: "Conglomerates", children: ["XXXX"] },
+				{ name: "Equip Fin & Lease", children: ["Cons/Comm/Lease Financing"] },
+				{ name: "Homebuilding", children: ["Building & Construction","Building Materials"] }
 			]
 		}, {
 			name: "TMT",
 			children: [
-				{ name: "Media", children: [""] },
-				{ name: "Technology", children: [""] },
-				{ name: "Telecom & Cable", children: [""] }
+				{ name: "Media", children: ["Media - Broadcast","Media - Diversified","Media - Services","Media Content","Printing & Publishing"] },
+				{ name: "Technology", children: ["Computer Hardware","Electronics","Software/Services","Tech Hardware & Equipment"] },
+				{ name: "Telecom & Cable", children: ["Cable & Satellite TV","Media-Cable","Telecom - Integrated/Services","Telecom - Satellite","Telecom - Wireless","Telecom - Wireline Integrated & Services","Telecommunications Equipment"] }
 			]
 		}, {
 			name: "Transportation",
 			children: [
-				{ name: "Airlines", children: [""] },
-				{ name: "Freight / Rail / Logis.", children: [""] }
+				{ name: "Airlines", children: ["Airlines","Air Transportation"] },
+				{ name: "Freight / Rail / Logis.", children: ["Rail","Railroads","Transport Infrastructure/Services","Trucking & Delivery"] }
 			]
 		}
 	]
@@ -271,6 +268,20 @@ class App extends Component {
 		return prevState;
     });
   }
+
+  onRegionsFilterChanged = (e, region) => {
+	this.setState( prevState => {
+		if (prevState.regions.has(region)) {
+			prevState.regions = prevState.regions.delete(region);
+		}
+		else {
+			prevState.regions = prevState.regions.add(region);
+		}
+		console.log(region);	
+		console.log(prevState.regions);
+		return prevState;
+	});
+  }
   
   getFilters()
   {
@@ -287,6 +298,10 @@ class App extends Component {
 		console.log(dbSectors);
 		filter.Sector = {};
 		filter.Sector["$in"] = dbSectors.toArray();
+	}
+	if (this.state.regions.size > 0) {
+		filter.Region = {};
+		filter.Region["$in"] = this.state.regions.toArray();
 	}
 	console.log("filter: " + JSON.stringify(filter));
 	return filter;
@@ -313,6 +328,8 @@ class App extends Component {
 				<MinFaceFilter filterState={this.state.minFaceFilter} onFilterChanged={this.onMinFaceFilterChanged} />
 				<hr className="App-filterbar-hr"/>
 				<SectorsFilter sectorMap={this.sectorMap} filterState={this.state.sectors} onFilterChanged={this.onSectorsFilterChanged}/>
+				<hr className="App-filterbar-hr"/>
+				<RegionsFilter filterState={this.state.regions} onFilterChanged={this.onRegionsFilterChanged}/>
 			</Col>
 			<Col span={20}>
 				<BondTable bondDataService={this.bondDataService} filters={this.getFilters()}/>
