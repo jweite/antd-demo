@@ -11,6 +11,8 @@ export class BondTable extends Component {
 	this.state = {
 		waitingForContent: true,
 		bonds: [],
+		sortField: "IssuerName",
+		sortDirection: "asc"
 	}
   }
 	
@@ -55,20 +57,22 @@ export class BondTable extends Component {
   
 	componentWillMount() 
 	{
-		this.refreshFromServer('IssuerName', 'asc');
+		this.refreshFromServer(this.props, this.state);
 	}
 	
 	componentWillUpdate(nextProps, nextState) 
 	{
 		console.log("componentWillUpdate");
+		if (nextProps.filters !== this.props.filters || nextState.sortField !== this.state.sortField || nextState.sortDirection !== this.state.sortDirection) {
+			this.refreshFromServer(nextProps, nextState);
+		}
 	}
 	
-	refreshFromServer(sortField, sortDirection)
+	refreshFromServer(props, state)
 	{
-		var query='{"ParentSector":"Basic Industry", "Coupon": { "$gt": 4, "$lt":6 }}';
-		var sort = 'sortField=' + sortField + '&' + 'sortDirection=' + sortDirection;
-		console.log(sort);
-		this.bondDataService.get('/bonds?query=' + query + '&' + sort)
+		console.log("refreshFromServer:" + JSON.stringify(props.filters));
+		var sort = 'sortField=' + state.sortField + '&sortDirection=' + state.sortDirection;
+		this.bondDataService.get('/bonds?query=' + JSON.stringify(props.filters) + '&' + sort)
 			.then((response) => {
 				this.contentReceived(response.data);
 			})
@@ -101,11 +105,14 @@ export class BondTable extends Component {
 	};
 
 	handleTableChange = (pagination, filters, sorter) => {
-		this.refreshFromServer(sorter.field, sorter.order);
+		this.setState({
+			sortField : sorter.field,
+			sortDirection : sorter.order
+		});
 	}
   
   render() {
-//	console.log(this.state);
+	console.log("BondTable render");
 	return ((this.state.waitingForContent === true) ?
 			<div>Waiting for content...</div> :
 			<Table
@@ -114,6 +121,7 @@ export class BondTable extends Component {
 				dataSource={this.state.bonds}
 				rowSelection={this.rowSelection}
 				onChange={this.handleTableChange}
+				pagination={{pageSize: 50}}
 			/>
 	);
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import axios from 'axios';
+import { Set, Map } from 'immutable';
 import { Col, Row } from 'antd';
 
 import { RecsFilter } from './components/RecsFilter';
@@ -27,11 +28,11 @@ class App extends Component {
 	const endpointURI = "";
 	const bondDataServiceURL = protocol + "://" + server + ":" + port + '/' + endpointURI;	
 	this.bondDataService = axios.create({
-	  baseURL: bondDataServiceURL,
-	  timeout: timeout,
-	  headers: {
-		'Content-Type': 'application/json'
-	  }
+		baseURL: bondDataServiceURL,
+		timeout: timeout,
+		headers: {
+			'Content-Type': 'application/json'
+		}
 	});	
 	
 	this.state = {
@@ -85,18 +86,81 @@ class App extends Component {
 		minFaceFilter : {
 			value : ""
 		},
-		sectorsFilter : {
-			chemicals : true,
-			coal: false,
-			metalsMining: false,
-			oilGas: false
-		},
 		regionsFilter : {
 			americas : false,
 			emea : false,
 			asiaPacific : false
-		}
+		},
+		sectors: Set()
 	};
+	
+	this.sectorMap = [
+		{ 
+			name: "Basic Industries",
+			children: [
+				{ name: "Chemicals", children: ["Chemicals"] },
+				{ name: "Constr Aggregates", children: [""] },
+				{ name: "Metals & Mining", children: [""] },
+				{ name: "Paper & Packaging", children: ["Forestry/Paper", "Packaging"] }
+			]
+		}, {
+			name: "Consumer",
+			children: [
+				{ name: "Cons Proc / Svc", children: [""] },
+				{ name: "Food & Bev", children: [""] },
+				{ name: "Gaming & Leisure", children: [""] },
+				{ name: "Healthcare / Pharma", children: [""] },
+				{ name: "Retail / Grocers", children: [""] }
+			]
+		}, {
+			name: "Energy", 
+			children: [
+				{ name: "Oil & Gas", children: [""] },
+				{ name: "Pipelines / MLPs", children: [""] },
+				{ name: "Utilities", children: [""] }
+			]
+		}, {
+			name: "Financial Services",
+			children: [
+				{ name: "Banks / Brokers", children: [""] },
+				{ name: "Insurance", children: [""] },
+				{ name: "Regional Banks", children: [""] },
+				{ name: "REITs / CRE", children: [""] },
+				{ name: "Specialty Finance", children: [""] }
+			]
+		}, {
+			name: "Manufaturing",
+			children: [
+				{ name: "Aerospace / Defense", children: [""] },
+				{ name: "Automotive", children: [""] },
+				{ name: "Captial Goods", children: [""] },
+				{ name: "Conglomerates", children: [""] },
+				{ name: "Equip Fin & Lease", children: [""] },
+				{ name: "Homebuilding", children: [""] }
+			]
+		}, {
+			name: "TMT",
+			children: [
+				{ name: "Media", children: [""] },
+				{ name: "Technology", children: [""] },
+				{ name: "Telecom & Cable", children: [""] }
+			]
+		}, {
+			name: "Transportation",
+			children: [
+				{ name: "Airlines", children: [""] },
+				{ name: "Freight / Rail / Logis.", children: [""] }
+			]
+		}
+	]
+	
+	// This simplifies lookup by second level sector.
+	this.secondLevelSectorMap = Map();
+	this.sectorMap.map(parentSector =>
+		parentSector.children.map(childSector => {
+			this.secondLevelSectorMap = this.secondLevelSectorMap.set(childSector.name, childSector.children)
+		})
+	)
   }	
 
   onRecsFilterChanged = (e) => {
@@ -195,13 +259,41 @@ class App extends Component {
   }
   
   onSectorsFilterChanged = (e) => {
-	this.setState( prevState => {	
-		prevState.sectorsFilter[e.target.stateAttrName] = e.target.checked;
+	this.setState( prevState => {
+		if (e.target.checked) {
+			prevState.sectors = prevState.sectors.add(e.target.stateAttrName);
+		}
+		else {
+			prevState.sectors = prevState.sectors.delete(e.target.stateAttrName);
+		}
+		console.log("sectors set:");
+		console.log(prevState.sectors);
 		return prevState;
     });
   }
+  
+  getFilters()
+  {
+	var filter = {};
+	if (this.state.sectors.size > 0) {
+		let dbSectors = Set();
+		this.state.sectors.map(selectedSector => {
+			let childSectorList = this.secondLevelSectorMap.get(selectedSector);
+			console.log("getFilters: " + selectedSector);
+			console.log(childSectorList);
+			dbSectors = dbSectors.union(childSectorList);
+		})
+		console.log("getFilters");
+		console.log(dbSectors);
+		filter.Sector = {};
+		filter.Sector["$in"] = dbSectors.toArray();
+	}
+	console.log("filter: " + JSON.stringify(filter));
+	return filter;
+  }
 
   render() {
+	console.log(this.sectorMap);
     return (
       <div className="App">
 		<Row>
@@ -220,10 +312,10 @@ class App extends Component {
 				<hr className="App-filterbar-hr"/>
 				<MinFaceFilter filterState={this.state.minFaceFilter} onFilterChanged={this.onMinFaceFilterChanged} />
 				<hr className="App-filterbar-hr"/>
-				<SectorsFilter filterState={this.state.sectorsFilter} onFilterChanged={this.onSectorsFilterChanged}/>
+				<SectorsFilter sectorMap={this.sectorMap} filterState={this.state.sectors} onFilterChanged={this.onSectorsFilterChanged}/>
 			</Col>
 			<Col span={20}>
-				<BondTable bondDataService={this.bondDataService}/>
+				<BondTable bondDataService={this.bondDataService} filters={this.getFilters()}/>
 			</Col>
 		</Row>
       </div>
