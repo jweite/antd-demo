@@ -18,6 +18,10 @@
   padding: 20px
 }
 
+.App-filter-panels {
+  background-color: #F9FAFA;
+}
+ 
 .App-filterbar-checkbox-panel {
 	border-style: solid;
 	border-width: 1px;

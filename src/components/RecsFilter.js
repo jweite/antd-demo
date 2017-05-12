@@ -19,7 +19,7 @@ export class RecsFilter extends Component {
   }
   
   render() {
-	return <div>
+	return <div className="App-filter-panels">
 		<Row type="flex" justify="start"><Icon type={this.state.isCollapsed ? "down" : "up"} onClick={this.collapserClick} />&nbsp;<strong>Recommendations</strong></Row>
 		{!this.state.isCollapsed && <div>
 			<Row><Button className="App-filterbar-recs-button" type={this.props.filterState.has("Outperform") ? "primary" : ""} onClick={(e) => {this.props.onFilterChanged(e, "Outperform")}}>Outperform</Button></Row>

@@ -59,7 +59,10 @@ class App extends Component {
 		},
 		maturityDurationFilter : {
 			mode : "maturity",
-			maturity : moment(),
+			maturity : {
+				lower : moment().year(),
+				upper : moment().year()+30
+			},
 			duration : "0"
 		},
 		priceFilter : {
@@ -195,7 +198,8 @@ class App extends Component {
   onMaturityDurationFilterChanged = (val) => {
 	this.setState( prevState => {
 		if (prevState.maturityDurationFilter.mode === "maturity") {
-			prevState.maturityDurationFilter.maturity = val;
+			prevState.maturityDurationFilter.maturity.lower = val[0];
+			prevState.maturityDurationFilter.maturity.upper = val[1];
 		}
 		else {
 			prevState.maturityDurationFilter.duration = val;
@@ -292,6 +296,10 @@ class App extends Component {
 	console.log(this.state.priceFilter);
 	
 	filter.LatestPrice = {"$gte" : this.state.priceFilter.lower, "$lt" : this.state.priceFilter.upper};
+
+	if (this.state.maturityDurationFilter.mode === "maturity") {
+		filter.Maturity = {"$gte" : moment({year: this.state.maturityDurationFilter.maturity.lower, month: 0, day: 1}), "$lte" : moment({year: this.state.maturityDurationFilter.maturity.upper, month: 11, day: 31})};
+	}
 	
 	if (this.state.sectorsFilter.size > 0) {
 		let dbSectors = Set();

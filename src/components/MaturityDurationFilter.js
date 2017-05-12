@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Button, DatePicker, Icon, Row } from 'antd';
+import { Button, Slider, Icon, Row } from 'antd';
+import moment from 'moment';
+
 import '../App.css';
 
 export class MaturityDurationFilter extends Component {
@@ -8,12 +10,17 @@ export class MaturityDurationFilter extends Component {
 		this.state = {
 			isCollapsed: false,
 		};
+		this.vals = [this.props.filterState.maturity.lower, this.props.filterState.maturity.upper];
 	}
 
   collapserClick = (e) => {
 	this.setState(prevState => ({
 		isCollapsed: !prevState.isCollapsed,
 	}));
+  }
+
+  onChange = (vals) => {
+	this.vals = vals;
   }
 	
   render() {
@@ -26,7 +33,7 @@ export class MaturityDurationFilter extends Component {
 					<Button className="App-filterbar-button" type={this.props.filterState.mode === "duration" ? "primary" : ""} onClick={(e) => {this.props.onFilterModeChange(e, "duration")}}>Duration</Button>
 				</Button.Group>
 			</Row>
-			{ this.props.filterState.mode === "maturity" && <DatePicker value={this.props.filterState.maturity} onChange={(date, dateString) => {this.props.onFilterChanged(date)}}/> }
+			{ this.props.filterState.mode === "maturity" && <Slider min={moment().year()} max={moment().year()+30} range={true} defaultValue={this.vals} onChange={this.onChange} onAfterChange={this.props.onFilterChanged}/> }
 		</div> }
 	</div>
   }
