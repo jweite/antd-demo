@@ -66,8 +66,8 @@ class App extends Component {
 			duration : "0"
 		},
 		priceFilter : {
-			upper: 90,
-			lower: 10
+			upper: 200,
+			lower: 0
 		},
 		oasYieldFilter : {
 			mode : "oas",
@@ -203,8 +203,10 @@ class App extends Component {
   }
   
   onPriceFilterChanged = (vals) => {
+	console.log(vals);
 	this.setState( prevState => {
-		prevState.priceFilter = vals;
+		prevState.priceFilter.lower = vals[0];
+		prevState.priceFilter.upper = vals[1];
 		return prevState;
     });
   }
@@ -286,6 +288,13 @@ class App extends Component {
   getFilters()
   {
 	var filter = {};
+	
+	console.log("getFilters");
+	console.log(this.state);
+	console.log(this.state.priceFilter);
+	
+	filter.LatestPrice = {"$gte" : this.state.priceFilter.lower, "$lt" : this.state.priceFilter.upper};
+	
 	if (this.state.sectors.size > 0) {
 		let dbSectors = Set();
 		this.state.sectors.map(selectedSector => {
@@ -298,7 +307,7 @@ class App extends Component {
 		console.log(dbSectors);
 		filter.Sector = {};
 		filter.Sector["$in"] = dbSectors.toArray();
-	}
+	}	
 	if (this.state.regions.size > 0) {
 		filter.Region = {};
 		filter.Region["$in"] = this.state.regions.toArray();

@@ -25,7 +25,7 @@ export class PriceFilter extends Component {
 	render() {
 		return <div>
 			<Row type="flex" justify="start"><Icon onClick={this.collapserClick} type={this.state.isCollapsed ? "down" : "up"} />&nbsp;<strong>Px</strong></Row>
-			{!this.state.isCollapsed && <Slider min={0} max={100} range={true} defaultValue={this.vals} onChange={this.onChange} onAfterChange={this.props.onFilterChanged}/> }
+			{!this.state.isCollapsed && <Slider min={0} max={200} range={true} defaultValue={this.vals} onChange={this.onChange} onAfterChange={this.props.onFilterChanged}/> }
 		</div>
 	}
 }
