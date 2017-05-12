@@ -37,11 +37,8 @@ class App extends Component {
 	});	
 	
 	this.state = {
-		recsFilter : {
-			outPerform: false,
-			marketPerform: false,
-			underPerform: false
-		},
+		recsFilter : Set(),
+		
 		ratingFilter : {
 			mode: "acr",
 			acr : {
@@ -87,8 +84,8 @@ class App extends Component {
 		minFaceFilter : {
 			value : ""
 		},
-		sectors: Set(),
-		regions: Set()
+		sectorsFilter: Set(),
+		regionsFilter: Set()
 	};
 	
 	this.sectorMap = [
@@ -160,11 +157,16 @@ class App extends Component {
 	)
   }	
 
-  onRecsFilterChanged = (e) => {
+  onRecsFilterChanged = (e, rec) => {
 	this.setState( prevState => {
-		prevState.recsFilter[e.target.stateAttrName] = e.target.checked;
+		if (prevState.recsFilter.has(rec)) {
+			prevState.recsFilter = prevState.recsFilter.delete(rec);
+		}
+		else {
+			prevState.recsFilter = prevState.recsFilter.add(rec);
+		}
 		return prevState;
-    });
+	});
   }
 
   onRatingsFilterModeChange = (e, mode) => {
@@ -260,27 +262,23 @@ class App extends Component {
   onSectorsFilterChanged = (e) => {
 	this.setState( prevState => {
 		if (e.target.checked) {
-			prevState.sectors = prevState.sectors.add(e.target.stateAttrName);
+			prevState.sectorsFilter = prevState.sectorsFilter.add(e.target.stateAttrName);
 		}
 		else {
-			prevState.sectors = prevState.sectors.delete(e.target.stateAttrName);
+			prevState.sectorsFilter = prevState.sectorsFilter.delete(e.target.stateAttrName);
 		}
-		console.log("sectors set:");
-		console.log(prevState.sectors);
 		return prevState;
     });
   }
 
   onRegionsFilterChanged = (e, region) => {
 	this.setState( prevState => {
-		if (prevState.regions.has(region)) {
-			prevState.regions = prevState.regions.delete(region);
+		if (prevState.regionsFilter.has(region)) {
+			prevState.regionsFilter = prevState.regionsFilter.delete(region);
 		}
 		else {
-			prevState.regions = prevState.regions.add(region);
+			prevState.regionsFilter = prevState.regionsFilter.add(region);
 		}
-		console.log(region);	
-		console.log(prevState.regions);
 		return prevState;
 	});
   }
@@ -295,9 +293,9 @@ class App extends Component {
 	
 	filter.LatestPrice = {"$gte" : this.state.priceFilter.lower, "$lt" : this.state.priceFilter.upper};
 	
-	if (this.state.sectors.size > 0) {
+	if (this.state.sectorsFilter.size > 0) {
 		let dbSectors = Set();
-		this.state.sectors.map(selectedSector => {
+		this.state.sectorsFilter.map(selectedSector => {
 			let childSectorList = this.secondLevelSectorMap.get(selectedSector);
 			console.log("getFilters: " + selectedSector);
 			console.log(childSectorList);
@@ -308,9 +306,9 @@ class App extends Component {
 		filter.Sector = {};
 		filter.Sector["$in"] = dbSectors.toArray();
 	}	
-	if (this.state.regions.size > 0) {
+	if (this.state.regionsFilter.size > 0) {
 		filter.Region = {};
-		filter.Region["$in"] = this.state.regions.toArray();
+		filter.Region["$in"] = this.state.regionsFilter.toArray();
 	}
 	console.log("filter: " + JSON.stringify(filter));
 	return filter;
@@ -336,9 +334,9 @@ class App extends Component {
 				<hr className="App-filterbar-hr"/>
 				<MinFaceFilter filterState={this.state.minFaceFilter} onFilterChanged={this.onMinFaceFilterChanged} />
 				<hr className="App-filterbar-hr"/>
-				<SectorsFilter sectorMap={this.sectorMap} filterState={this.state.sectors} onFilterChanged={this.onSectorsFilterChanged}/>
+				<SectorsFilter sectorMap={this.sectorMap} filterState={this.state.sectorsFilter} onFilterChanged={this.onSectorsFilterChanged}/>
 				<hr className="App-filterbar-hr"/>
-				<RegionsFilter filterState={this.state.regions} onFilterChanged={this.onRegionsFilterChanged}/>
+				<RegionsFilter filterState={this.state.regionsFilter} onFilterChanged={this.onRegionsFilterChanged}/>
 			</Col>
 			<Col span={20}>
 				<BondTable bondDataService={this.bondDataService} filters={this.getFilters()}/>

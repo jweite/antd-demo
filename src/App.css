@@ -52,7 +52,7 @@
 
 .App-filterbar-sector-button {
 	width: 100%;
-	margin: 10px 0px;
+	margin: 5px 0px;
 }
 
 .App-filterbar-sector-checkbox-div {
@@ -64,8 +64,14 @@
 
 .App-filterbar-region-button {
 	width: 100%;
-	margin: 10px 0px;
+	margin: 5px 0px;
 }
+
+.App-filterbar-recs-button {
+	width: 100%;
+	margin: 5px 0px;
+}
+
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
