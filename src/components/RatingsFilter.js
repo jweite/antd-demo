@@ -31,18 +31,18 @@ export class RatingsFilter extends Component {
 				<Row>
 					<Col span={3}/>
 					<Col span={9}>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="aaa" onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.aaa}>AAA</Checkbox></Row>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="aa"  onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.aa} >AA</Checkbox></Row>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="a"   onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.a}  >A</Checkbox></Row>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="bbb" onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.bbb}>BBB</Checkbox></Row>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="bb"  onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.bb} >BB</Checkbox></Row>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="b"   onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.b}  >B</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="aaa" disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.aaa}>AAA</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="aa"  disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.aa} >AA</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="a"   disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.a}  >A</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="bbb" disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.bbb}>BBB</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="bb"  disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.bb} >BB</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="b"   disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.b}  >B</Checkbox></Row>
 					</Col>
 					<Col span={9}>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="ccc" onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.ccc}>CCC</Checkbox></Row>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="cc"  onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.cc} >CC</Checkbox></Row>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="c"   onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.c}  >C</Checkbox></Row>
-						<Row type="flex" justify="start"><Checkbox stateAttrName="d"   onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.d}  >D</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="ccc" disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.ccc}>CCC</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="cc"  disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.cc} >CC</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="c"   disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.c}  >C</Checkbox></Row>
+						<Row type="flex" justify="start"><Checkbox stateAttrName="d"   disabled onChange={this.props.onFilterChanged} checked={this.props.filterState.acr.d}  >D</Checkbox></Row>
 					</Col>
 				</Row> 
 			</div> }
