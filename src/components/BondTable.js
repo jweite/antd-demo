@@ -32,6 +32,7 @@ export class BondTable extends Component {
 	  dataIndex: 'Maturity',
 	  key: 'maturity',
 	  sorter: true,
+	render: (text, record, index)	=> <p>{text.substring(0,10)}</p>,
 	}, {
 	  title: 'Px',
 	  dataIndex: 'LatestPrice',
@@ -54,7 +55,7 @@ export class BondTable extends Component {
 	  sorter: true,
 	}
   ];	  
-  
+
 	componentWillMount() 
 	{
 		this.refreshFromServer(this.props, this.state);
