@@ -10,7 +10,7 @@ import { MaturityDurationFilter } from './components/MaturityDurationFilter';
 import { PriceFilter } from './components/PriceFilter';
 import { OASYieldFilter } from './components/OASYieldFilter';
 import { LiquidityFilter } from './components/LiquidityFilter';
-import { MinFaceFilter } from './components/MinFaceFilter';
+import { FaceValueFilter } from './components/FaceValueFilter';
 import { SectorsFilter } from './components/SectorsFilter';
 import { RegionsFilter } from './components/RegionsFilter';
 import { BondTable } from './components/BondTable';
@@ -72,8 +72,8 @@ class App extends Component {
 		oasYieldFilter : {
 			mode : "oas",
 			oas : {
-				lower : "",
-				upper : ""
+				lower : 0,
+				upper : 1001
 			},
 			yield : {
 				lower : "",
@@ -84,8 +84,9 @@ class App extends Component {
 			upper: 90,
 			lower: 10
 		},
-		minFaceFilter : {
-			value : ""
+		faceValueFilter : {
+			upper: 5001,
+			lower: 200
 		},
 		sectorsFilter: Set(),
 		regionsFilter: Set()
@@ -207,9 +208,23 @@ class App extends Component {
 		return prevState;
     });
   }
+
+  onOasYieldFilterChanged = (val) => {
+	this.setState( prevState => {
+		if (prevState.oasYieldFilter.mode === "oas") {
+			prevState.oasYieldFilter.oas.lower = val[0];
+			prevState.oasYieldFilter.oas.upper = val[1];
+		}
+		else {
+			prevState.oasYieldFilter.yield.lower = val[0];
+			prevState.oasYieldFilter.yield.upper = val[1];
+		}
+		return prevState;
+    });
+  }
+  
   
   onPriceFilterChanged = (vals) => {
-	console.log(vals);
 	this.setState( prevState => {
 		prevState.priceFilter.lower = vals[0];
 		prevState.priceFilter.upper = vals[1];
@@ -225,29 +240,6 @@ class App extends Component {
     });
   }
 
-  onOasYieldLowerFilterChanged = (val) => {
-	this.setState( prevState => {
-		if (prevState.oasYieldFilter.mode === "oas") {
-			prevState.oasYieldFilter.oas.lower = val;
-		}
-		else {
-			prevState.oasYieldFilter.yield.lower = val;
-		}
-		return prevState;
-    });
-  }
-  
-  onOasYieldUpperFilterChanged = (val) => {
-	this.setState( prevState => {
-		if (prevState.oasYieldFilter.mode === "oas") {
-			prevState.oasYieldFilter.oas.upper = val;
-		}
-		else {
-			prevState.oasYieldFilter.yield.upper = val;
-		}
-		return prevState;
-    });
-  }
 
   onLiquidityFilterChanged = (vals) => {
 	this.setState( prevState => {
@@ -256,9 +248,10 @@ class App extends Component {
     });
   }
 
-  onMinFaceFilterChanged = (val) => {
+  onFaceValueFilterChanged = (vals) => {
 	this.setState( prevState => {
-		prevState.minFaceFilter.value = val;
+		prevState.faceValueFilter.lower = vals[0];
+		prevState.faceValueFilter.upper = vals[1];
 		return prevState;
     });
   }
@@ -285,7 +278,7 @@ class App extends Component {
 		}
 		return prevState;
 	});
-  }
+  }	
   
   getFilters()
   {
@@ -299,6 +292,24 @@ class App extends Component {
 
 	if (this.state.maturityDurationFilter.mode === "maturity") {
 		filter.Maturity = {"$gte" : moment({year: this.state.maturityDurationFilter.maturity.lower, month: 0, day: 1}), "$lte" : moment({year: this.state.maturityDurationFilter.maturity.upper, month: 11, day: 31})};
+	}
+
+	if (this.state.faceValueFilter.upper !== 5001) {
+		filter.FaceValue = {"$gte":this.state.faceValueFilter.lower, "$lte":this.state.faceValueFilter.upper};
+	}
+	else {
+		// 5001 = unbounded. 
+		filter.FaceValue = {"$gte":this.state.faceValueFilter.lower};
+	}
+	
+	if (this.state.oasYieldFilter.mode === "oas") {
+		if (this.state.oasYieldFilter.oas.upper !== 1001) {
+			filter.LatestOAS = {"$gte":this.state.oasYieldFilter.oas.lower, "$lte":this.state.oasYieldFilter.oas.upper};
+		}
+		else {
+			// 1001 = unbounded. 
+			filter.LatestOAS = {"$gte":this.state.oasYieldFilter.oas.lower};
+		}
 	}
 	
 	if (this.state.sectorsFilter.size > 0) {
@@ -336,11 +347,11 @@ class App extends Component {
 				<hr className="App-filterbar-hr"/>
 				<PriceFilter filterState={this.state.priceFilter} onFilterChanged={this.onPriceFilterChanged} />
 				<hr className="App-filterbar-hr"/>
-				<OASYieldFilter filterState={this.state.oasYieldFilter} onLowerFilterChanged={this.onOasYieldLowerFilterChanged} onUpperFilterChanged={this.onOasYieldUpperFilterChanged} onFilterModeChange={this.onOasYieldFilterModeChange} />
+				<OASYieldFilter filterState={this.state.oasYieldFilter} onFilterChanged={this.onOasYieldFilterChanged} onFilterModeChange={this.onOasYieldFilterModeChange} />
 				<hr className="App-filterbar-hr"/>
 				<LiquidityFilter filterState={this.state.liquidityFilter} onFilterChanged={this.onLiquidityFilterChanged} />
 				<hr className="App-filterbar-hr"/>
-				<MinFaceFilter filterState={this.state.minFaceFilter} onFilterChanged={this.onMinFaceFilterChanged} />
+				<FaceValueFilter filterState={this.state.faceValueFilter} onFilterChanged={this.onFaceValueFilterChanged} />
 				<hr className="App-filterbar-hr"/>
 				<SectorsFilter sectorMap={this.sectorMap} filterState={this.state.sectorsFilter} onFilterChanged={this.onSectorsFilterChanged}/>
 				<hr className="App-filterbar-hr"/>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Col, Icon, Row } from 'antd';
-import { NumericInput } from './NumericInput';
+import {Button, Icon, Row, Slider } from 'antd';
 import '../App.css';
 
 export class OASYieldFilter extends Component {
@@ -9,12 +8,17 @@ export class OASYieldFilter extends Component {
 		this.state = {
 			isCollapsed: false,
 		};
+		this.vals = [this.props.filterState.oas.lower, this.props.filterState.oas.upper];
 	}
 
   collapserClick = (e) => {
 	this.setState(prevState => ({
 		isCollapsed: !prevState.isCollapsed,
 	}));
+  }
+
+  onChange = (vals) => {
+	this.vals = vals;
   }
 
   render() {
@@ -28,24 +32,7 @@ export class OASYieldFilter extends Component {
 				</Button.Group>
 			</Row>
 			{ this.props.filterState.mode === "oas" && <div>
-				<Row type="flex" justify="start" align="middle" className="App-filterbar-checkbox-panel">
-					<Col span={1}>
-						<label>from:</label>
-					</Col>
-					<Col span={3} />
-					<Col span={20}>
-						<NumericInput value={this.props.filterState.oas.lower} onBlur={this.props.onLowerFilterChanged} className="App-filterbar-textInput" />
-					</Col>
-				</Row>
-				<Row type="flex" justify="start" align="middle" className="App-filterbar-checkbox-panel">
-					<Col span={1}>
-						<label>to:</label>
-					</Col>
-					<Col span={3} />
-					<Col span={20}>
-						<NumericInput value={this.props.filterState.oas.upper} onBlur={this.props.onUpperFilterChanged} className="App-filterbar-textInput" />
-					</Col>
-				</Row>
+				<Slider min={0} max={1001} range={true} defaultValue={this.vals} onChange={this.onChange} onAfterChange={this.props.onFilterChanged}/>
 			</div> }
 		</div> }
 	</div>
