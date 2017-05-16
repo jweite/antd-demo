@@ -60,8 +60,8 @@ class App extends Component {
 		maturityDurationFilter : {
 			mode : "maturity",
 			maturity : {
-				lower : moment().year(),
-				upper : moment().year()+30
+				lower : moment().year()-1,
+				upper : moment().year()+31
 			},
 			duration : "0"
 		},
@@ -310,6 +310,9 @@ class App extends Component {
 			// 1001 = unbounded. 
 			filter.LatestOAS = {"$gte":this.state.oasYieldFilter.oas.lower};
 		}
+	}
+	else {
+		filter.LatestYield = {"$gte":this.state.oasYieldFilter.yield.lower, "$lte":this.state.oasYieldFilter.yield.upper};
 	}
 	
 	if (this.state.sectorsFilter.size > 0) {

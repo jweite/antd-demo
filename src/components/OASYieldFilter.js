@@ -34,6 +34,9 @@ export class OASYieldFilter extends Component {
 			{ this.props.filterState.mode === "oas" && <div>
 				<Slider min={0} max={1001} range={true} defaultValue={this.vals} onChange={this.onChange} onAfterChange={this.props.onFilterChanged}/>
 			</div> }
+			{ this.props.filterState.mode === "yield" && <div>
+				<Slider min={0} max={50} range={true} defaultValue={this.vals} onChange={this.onChange} onAfterChange={this.props.onFilterChanged}/>
+			</div> }
 		</div> }
 	</div>
   }

@@ -33,7 +33,7 @@ export class MaturityDurationFilter extends Component {
 					<Button className="App-filterbar-button" type={this.props.filterState.mode === "duration" ? "primary" : ""} onClick={(e) => {this.props.onFilterModeChange(e, "duration")}}>Duration</Button>
 				</Button.Group>
 			</Row>
-			{ this.props.filterState.mode === "maturity" && <Slider min={moment().year()} max={moment().year()+30} range={true} defaultValue={this.vals} onChange={this.onChange} onAfterChange={this.props.onFilterChanged}/> }
+			{ this.props.filterState.mode === "maturity" && <Slider min={moment().year()-1} max={moment().year()+31} range={true} defaultValue={this.vals} onChange={this.onChange} onAfterChange={this.props.onFilterChanged}/> }
 		</div> }
 	</div>
   }
