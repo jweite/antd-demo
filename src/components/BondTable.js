@@ -122,7 +122,7 @@ export class BondTable extends Component {
 				dataSource={this.state.bonds}
 				rowSelection={this.rowSelection}
 				onChange={this.handleTableChange}
-				pagination={{pageSize: 50}}
+				pagination={{pageSize: 100}}
 			/>
 	);
   }

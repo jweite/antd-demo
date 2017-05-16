@@ -18,6 +18,12 @@
   padding: 20px
 }
 
+.App-filterbar-header {
+  background-color: #999;
+  color: #FFF;
+  padding: 10px 0px; 
+}
+
 .App-filter-panels {
   background-color: #F9FAFA;
 }

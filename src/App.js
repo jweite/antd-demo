@@ -338,7 +338,9 @@ class App extends Component {
     return (
       <div className="App">
 		<Row>
-			<Col span={4} className="App-panels">
+			<Col span={5} className="App-panels">
+				<div className="App-filterbar-header"><h3>Filters</h3></div>
+				<div>&nbsp;</div>
 				<RecsFilter filterState={this.state.recsFilter} onFilterChanged={this.onRecsFilterChanged} />
 				<hr className="App-filterbar-hr"/>
 				<RatingsFilter filterState={this.state.ratingFilter} onFilterChanged={this.onRatingsFilterChanged} onFilterModeChange={this.onRatingsFilterModeChange} />
@@ -357,7 +359,8 @@ class App extends Component {
 				<hr className="App-filterbar-hr"/>
 				<RegionsFilter filterState={this.state.regionsFilter} onFilterChanged={this.onRegionsFilterChanged}/>
 			</Col>
-			<Col span={20}>
+			<Col span={19}>
+				<div>&nbsp;</div>
 				<BondTable bondDataService={this.bondDataService} filters={this.getFilters()}/>
 			</Col>
 		</Row>
