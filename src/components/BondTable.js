@@ -72,8 +72,9 @@ export class BondTable extends Component {
 	refreshFromServer(props, state)
 	{
 		console.log("refreshFromServer:" + JSON.stringify(props.filters));
-		var sort = 'sortField=' + state.sortField + '&sortDirection=' + state.sortDirection;
-		this.bondDataService.get('/bonds?query=' + JSON.stringify(props.filters) + '&' + sort)
+		var sortClause = 'sortField=' + state.sortField + '&sortDirection=' + state.sortDirection;
+		var limitClause = 'limit=100';
+		this.bondDataService.get('/bonds?query=' + JSON.stringify(props.filters) + '&' + sortClause + '&' + limitClause)
 			.then((response) => {
 				this.contentReceived(response.data);
 			})
