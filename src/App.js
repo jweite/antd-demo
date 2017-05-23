@@ -14,6 +14,7 @@ import { FaceValueFilter } from './components/FaceValueFilter';
 import { SectorsFilter } from './components/SectorsFilter';
 import { RegionsFilter } from './components/RegionsFilter';
 import { BondTable } from './components/BondTable';
+import { Chart } from './components/Chart';
 
 import './App.css';
 
@@ -366,6 +367,9 @@ class App extends Component {
 				<div>&nbsp;</div>
 				<BondTable bondDataService={this.bondDataService} filters={this.getFilters()}/>
 			</Col>
+		</Row>
+		<Row>
+			<Chart />
 		</Row>
       </div>
     );
