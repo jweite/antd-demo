@@ -31,11 +31,23 @@ export class Chart extends Component {
 	refreshFromServer(props, state)
 	{
 		if (props.cusips.length > 0) {
+			var startDate = moment().subtract(1, 'years');
+			if (typeof(props.startDate) !== "undefined") {
+				startDate = moment(props.startDate, "YYYY-MM-DD");
+			}
+			
+			var endDate = moment();
+			if (typeof(props.endDate) !== "undefined") {
+				endDate = moment(props.endDate, "YYYY-MM-DD");
+			}
+			
+			var query = '{"Cusip":"' + props.cusips[0] + '","Run_Date":{"$gte":"' + startDate.format("YYYY-MM-DD") + '","$lt":"' + endDate.format("YYYY-MM-DD") + '"}}';
+			
 			var sortClause = '&sortField=Run_Date';
 			var limitClause = '&limit=2000';
-			
 			var fieldClause = (typeof(props.field) !== "undefined") ? "&fields=Run_Date," + props.field : "";
-			this.bondDataService.get('/bondMetrics?query={"Cusip":"' + props.cusips[0] + '"}' + sortClause + limitClause + fieldClause)
+			
+			this.bondDataService.get('/bondMetrics?query='+ query + sortClause + limitClause + fieldClause)
 				.then((response) => {
 					this.contentReceived(response.data);
 				})
@@ -73,7 +85,7 @@ export class Chart extends Component {
 
 	  render() {
 	return <div>
-		<ReactHighcharts config={this.state.chartConfig} />
+		<ReactHighcharts config={this.state.chartConfig}/>
 	</div>
   }  
 }

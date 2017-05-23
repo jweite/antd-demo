@@ -369,7 +369,7 @@ class App extends Component {
 			</Col>
 		</Row>
 		<Row>
-			<Chart bondDataService={this.bondDataService} cusips={["037833AJ"]} field="OAS"/>
+			<Chart bondDataService={this.bondDataService} cusips={["037833AJ"]} field="OAS" endDate={moment()} startDate = {moment().subtract(1, 'years')}/>
 		</Row>
       </div>
     );
