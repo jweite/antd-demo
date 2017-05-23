@@ -1,24 +1,79 @@
 import React, { Component } from 'react';
 import ReactHighcharts from 'react-highcharts';
+import moment from 'moment';
 
 export class Chart extends Component {
 
   constructor(props) {
 	super(props);
 	
-	this.config = {
-	  xAxis: {
-		categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-	  },
-	  series: [{
-		data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 295.6, 454.4]
-	  }]
-	};	
+	this.bondDataService = props.bondDataService;
+		
+	this.state = {
+//		waitingForContent: true,
+		chartConfig: {}
+	}		
   }
+  
+	componentWillMount() 
+	{
+		this.refreshFromServer(this.props, this.state);
+	}
+	
+	
+	componentWillUpdate(nextProps, nextState) 
+	{
+		if (nextProps.cusips !== this.props.cusips) {
+			this.refreshFromServer(nextProps, nextState);
+		}
+	}
+	
+	refreshFromServer(props, state)
+	{
+		if (props.cusips.length > 0) {
+			var sortClause = '&sortField=Run_Date';
+			var limitClause = '&limit=2000';
+			
+			var fieldClause = (typeof(props.field) !== "undefined") ? "&fields=Run_Date," + props.field : "";
+			this.bondDataService.get('/bondMetrics?query={"Cusip":"' + props.cusips[0] + '"}' + sortClause + limitClause + fieldClause)
+				.then((response) => {
+					this.contentReceived(response.data);
+				})
+				.catch(function (error) {
+					console.log(error);
+				})
+			;
+		}
+	}
 
-  render() {
+	contentReceived(bondMetrics) {
+		var seriesData = bondMetrics.map(bondMetric => [moment(bondMetric.Run_Date, "YYYY-MM-DDTHH:mm:ssZ").valueOf(), bondMetric[this.props.field]]);
+		this.setState({
+//			waitingForContent: false,
+			chartConfig: {
+				title: {
+					text: this.props.field
+				},
+				xAxis: {
+					type: 'datetime',
+					dateTimeLabelFormats: {
+						year: '%Y',
+						month: '%b %Y',
+						week: '%Y-%m-%d',
+						day: '%Y-%m-%d'
+					}
+				},
+				series: [{
+					name: this.props.cusips[0],
+					data: seriesData
+				}]
+			}
+		});
+	}
+
+	  render() {
 	return <div>
-		<ReactHighcharts config={this.config} />
+		<ReactHighcharts config={this.state.chartConfig} />
 	</div>
   }  
 }

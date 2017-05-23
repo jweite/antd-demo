@@ -369,7 +369,7 @@ class App extends Component {
 			</Col>
 		</Row>
 		<Row>
-			<Chart />
+			<Chart bondDataService={this.bondDataService} cusips={["037833AJ"]} field="OAS"/>
 		</Row>
       </div>
     );
