@@ -1,3 +1,6 @@
+# This is an exploration of ant design UI components in a React app for bond search / display.  It uses BondServer as a back end.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
